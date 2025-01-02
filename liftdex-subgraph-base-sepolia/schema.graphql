@@ -272,3 +272,16 @@ type TokenDayData @entity {
   # price stats
   priceUSD: BigDecimal!
 }
+
+type UniswapPair @entity {
+  # pair address
+  id: ID!
+
+  # mirrored from the smart contract
+  reserve0: BigDecimal!
+  reserve1: BigDecimal!
+
+  # Price in terms of the asset pair
+  token0Price: BigDecimal!
+  token1Price: BigDecimal!
+}

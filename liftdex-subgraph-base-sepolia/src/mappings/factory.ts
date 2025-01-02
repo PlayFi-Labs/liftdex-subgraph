@@ -2,7 +2,7 @@
 import { log } from '@graphprotocol/graph-ts'
 
 import { PairCreated } from '../types/Factory/Factory'
-import { Bundle, Pair, Token, UniswapFactory } from '../types/schema'
+import { Pair, Token, UniswapFactory } from '../types/schema'
 import { Pair as PairTemplate } from '../types/templates'
 import {
   FACTORY_ADDRESS,
@@ -26,11 +26,6 @@ export function handleNewPair(event: PairCreated): void {
     factory.untrackedVolumeUSD = ZERO_BD
     factory.totalLiquidityUSD = ZERO_BD
     factory.txCount = ZERO_BI
-
-    // create new bundle
-    let bundle = new Bundle('1')
-    bundle.ethPrice = ZERO_BD
-    bundle.save()
   }
   factory.pairCount = factory.pairCount + 1
   factory.save()

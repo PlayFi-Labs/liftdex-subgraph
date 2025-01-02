@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Factory
-    network: mainnet
+    network: base-sepolia
     source:
-      address: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'
+      address: '0x6263415D804eA3777B6E0B2722D80905aBDcb7Cc'
       abi: Factory
-      startBlock: 10000834
+      startBlock: 19372073
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -19,6 +19,35 @@ dataSources:
       entities:
         - Pair
         - Token
+        - UniswapPair
+      abis:
+        - name: Factory
+          file: ./abis/factory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+      eventHandlers:
+        - event: PairCreated(indexed address,indexed address,address,uint256)
+          handler: handleNewPair
+  - kind: ethereum
+    name: UniswapFactory
+    network: base-sepolia
+    source:
+      address: '0x7Ae58f10f7849cA6F5fB71b7f45CB416c9204b1e'
+      abi: Factory
+      startBlock: 9740086
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/uniswap-factory.ts
+      entities:
+        - Pair
+        - Token
+        - UniswapPair
       abis:
         - name: Factory
           file: ./abis/factory.json
@@ -34,7 +63,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: Pair
-    network: mainnet
+    network: base-sepolia
     source:
       abi: Pair
     mapping:
@@ -45,6 +74,7 @@ templates:
       entities:
         - Pair
         - Token
+        - UniswapPair
       abis:
         - name: Pair
           file: ./abis/pair.json
@@ -59,5 +89,27 @@ templates:
           handler: handleSwap
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+        - event: Sync(uint112,uint112)
+          handler: handleSync
+  - kind: ethereum
+    name: UniswapPair
+    network: base-sepolia
+    source:
+      abi: Pair
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/uniswap-pair.ts
+      entities:
+        - Pair
+        - Token
+        - UniswapPair
+      abis:
+        - name: Pair
+          file: ./abis/pair.json
+        - name: Factory
+          file: ./abis/factory.json
+      eventHandlers:
         - event: Sync(uint112,uint112)
           handler: handleSync
